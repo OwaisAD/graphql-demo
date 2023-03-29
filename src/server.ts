@@ -1,5 +1,9 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import mongoose from "mongoose";
+import { PORT, MONGODB_URI } from "../utils/config";
+import { infoLog, errorLog } from "../utils/logger";
+import Person from "../models/person";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -39,6 +43,20 @@ const typeDefs = `#graphql
     user(id: ID!): User,
     people: [Person],
     person(id: ID!): Person,
+  }
+
+  type Mutation {
+    createPerson(person: PersonInput): Person,
+    updatePerson(id: ID!, name: String!, age: Int!, email: String!, address: String!, phone: String!): Person,
+    deletePerson(id: ID!): Person,
+  }
+
+  input PersonInput {
+      name: String!
+      age: Int!
+      email: String!
+      address: String!
+      phone: String!
   }
 `;
 
@@ -118,6 +136,13 @@ const resolvers = {
       return people.find((person) => person.id === personId);
     },
   },
+  Mutation: {
+    createPerson: (parent, args, context, info) => {
+      const { name, age, email, address, phone } = args.person;
+      console.log("Trying to create person");
+      console.log("Created");
+    },
+  },
 };
 
 // The ApolloServer constructor requires two parameters: your schema
@@ -126,6 +151,19 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
+
+mongoose.set("strictQuery", false);
+
+console.log("connecting to ", PORT);
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    infoLog("connected to MongoDB");
+  })
+  .catch((err: Error) => {
+    errorLog("error connecting to MongoDB: ", err.message);
+  });
 
 // Passing an ApolloServer instance to the `startStandaloneServer` function:
 //  1. creates an Express app
@@ -141,5 +179,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-
