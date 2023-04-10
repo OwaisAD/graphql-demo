@@ -15,6 +15,9 @@ const CreatePostForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     createPost({ variables: { post } });
+    if (error) {
+      console.log(error);
+    }
   };
 
   return (
