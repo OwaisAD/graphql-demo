@@ -4,17 +4,21 @@ import typeDefs from "../typeDefs";
 import resolvers from "../resolvers";
 import mongoose, { mongo } from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
 const startServer = async () => {
   const app = express();
+
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
   });
   await apolloServer.start(); // recommended to use .start() before listening to port with express
-  apolloServer.applyMiddleware({ app, path: "/graphql_sbx" });
+  apolloServer.applyMiddleware({ app, path: "/graphql_sbx" }); // path: "/graphql_sbx"
+
+  app.use(cors());
 
   app.use((req, res) => {
     res.send("Hello from express apollo server");
