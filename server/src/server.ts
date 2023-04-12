@@ -5,6 +5,7 @@ import resolvers from "../resolvers";
 import mongoose, { mongo } from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import personRouter from "../controllers/people";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({ app, path: "/graphql_sbx" }); // path: "/graphql_sbx"
 
   app.use(cors());
+  app.use("/api/people", personRouter);
 
   app.use((req, res) => {
     res.send("Hello from express apollo server");
