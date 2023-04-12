@@ -2,6 +2,7 @@ import Post from "./models/Post.model";
 import Person from "./models/Person.model";
 import Address from "./models/Address.model";
 import mongoose, { isValidObjectId } from "mongoose";
+import { ObjectId } from "bson";
 
 const resolvers = {
   Query: {
@@ -168,12 +169,59 @@ const resolvers = {
 
       return newAddress;
     },
+    removePersonFromAddress: async (_parent: any, args: any, _context: any, _info: any) => {
+      const { personId, addressId } = args;
+
+      if (!validateId(personId) || !validateId(addressId)) {
+        throw new Error("Invalid person or address ID");
+      }
+
+      const person = await Person.findById(personId);
+      const address = await Address.findById(addressId);
+
+      if (!person || !address) {
+        throw new Error("Invalid person or address ID");
+      }
+
+      // remove from person and from address
+      if (person?.addresses.some((address) => address.equals(new ObjectId(addressId)))) {
+        person.addresses = person.addresses.filter(
+          (address) => !address.equals(new ObjectId(addressId))
+        );
+      }
+
+      if (address.persons.some((person) => person.equals(new ObjectId(personId)))) {
+        address.persons = address.persons.filter(
+          (person) => !person.equals(new ObjectId(personId))
+        );
+      }
+
+      await address.save();
+      await person.save();
+
+      const newAddress = await Address.findById(addressId).populate("persons");
+
+      if (newAddress !== null) {
+        newAddress.persons = newAddress.persons.map((person: any) => {
+          person.id = person.id.toString();
+          return person;
+        });
+      } else {
+        throw new Error("Failed to add person to address");
+      }
+
+      return newAddress;
+    },
   },
   Subscription: {
     personCreated: {},
     personUpdated: {},
     personDeleted: {},
   },
+};
+
+const validateId = (id: any) => {
+  return mongoose.Types.ObjectId.isValid(id);
 };
 
 export default resolvers;
