@@ -121,9 +121,20 @@ const resolvers = {
       return person;
     },
     deletePerson: async (_parent: any, args: any, _context: any, _info: any) => {
-      const id = args.id;
-      await Person.findByIdAndDelete(id);
-      return `Ok - person with id ${id} was successfully deleted`;
+      try {
+        const id = args.id;
+        const deletedPerson = await Person.findByIdAndDelete(id);
+        if (!deletedPerson) {
+          throw new Error("Person not found");
+        }
+
+        // delete all associated addresses - maybe this is unnecessary
+        await Address.deleteMany({ persons: deletedPerson._id });
+
+        return `Ok - person with id ${id} was successfully deleted`;
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
     },
     createAddress: async (parent: any, args: any, context: any, info: any) => {
       const { address } = args.address;
