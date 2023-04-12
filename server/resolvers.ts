@@ -52,20 +52,21 @@ const resolvers = {
       return post;
     },
     createPerson: async (parent: any, args: any, context: any, info: any) => {
-      const { name, age, email, address, phone } = args.person;
-      const person = new Person({ name, age, email, address, phone });
+      const { name, age, email, address, phone, image } = args.person;
+      const person = new Person({ name, age, email, address, phone, image });
       await person.save();
       return person;
     },
     updatePerson: async (_parent: any, args: any, _context: any, _info: any) => {
       const id = args.id;
-      const { name, age, email, address, phone } = args.person;
+      const { name, age, email, address, phone, image } = args.person;
       type person = {
         name?: String;
         age?: Number;
         email?: String;
         address?: String;
         phone?: String;
+        image?: String;
       };
       const updatedPost: person = {};
       if (name !== undefined) {
@@ -82,6 +83,9 @@ const resolvers = {
       }
       if (phone !== undefined) {
         updatedPost.phone = phone;
+      }
+      if (image !== undefined) {
+        updatedPost.image = image;
       }
 
       const person = await Person.findByIdAndUpdate(id, updatedPost, { new: true });

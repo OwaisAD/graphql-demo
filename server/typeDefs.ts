@@ -14,6 +14,7 @@ const typeDefs = gql`
     email: String
     address: String
     phone: String
+    image: String
   }
 
   type Query {
@@ -35,6 +36,7 @@ const typeDefs = gql`
     email: String!
     address: String!
     phone: String!
+    image: String!
   }
 
   type Mutation {

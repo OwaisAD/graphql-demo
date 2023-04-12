@@ -7,6 +7,7 @@ export type Person = {
   email: string;
   address: string;
   phone: string;
+  image: string;
   createdAt?: Date;
   [key: string]: any;
 };

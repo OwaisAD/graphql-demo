@@ -2,6 +2,8 @@ import Postlist from "./components/Postlist";
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import CreatePostForm from "./components/CreatePostForm";
+import PersonList from "./components/Personlist";
+import CreatePersonForm from "./components/CreatePersonForm";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -22,8 +24,10 @@ function App() {
     <ApolloProvider client={client}>
       <div>
         <h1>Frontpage</h1>
-        <CreatePostForm />
-        <Postlist />
+        <CreatePersonForm />
+        <PersonList />
+        {/* <CreatePostForm />
+        <Postlist /> */}
       </div>
     </ApolloProvider>
   );

@@ -28,6 +28,9 @@ const PersonSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
+  image: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
