@@ -20,7 +20,15 @@ const resolvers = {
       return await Person.findById(id);
     },
     getAllPeople: async () => {
-      return await Person.find({});
+      const people = await Person.find({}).populate({
+        path: "addresses",
+        select: { id: 1, address: 1, persons: 1 },
+        populate: {
+          path: "persons",
+          select: { id: 1, name: 1, age: 1, email: 1, phone: 1, image: 1 },
+        },
+      });
+      return people;
     },
     getAllAddresses: async () => {
       return await Address.find({}).populate("persons", {
@@ -64,8 +72,16 @@ const resolvers = {
       return post;
     },
     createPerson: async (parent: any, args: any, context: any, info: any) => {
-      const { name, age, email, address, phone, image } = args.person;
-      const person = new Person({ name, age, email, address, phone, image });
+      const { name, age, email, address, phone, image, addressIds } = args.person;
+      const person = new Person({
+        name,
+        age,
+        email,
+        address,
+        phone,
+        image,
+        addresses: addressIds || [],
+      });
       await person.save();
       return person;
     },
@@ -131,8 +147,12 @@ const resolvers = {
         throw new Error("Invalid person or address ID");
       }
 
+      // add person to address but also address to person!!
       address.persons.push(personId);
       await address.save();
+
+      person.addresses.push(addressId);
+      await person.save();
 
       // convert the Buffer object to string before returning
       const newAddress = await Address.findById(addressId).populate("persons");

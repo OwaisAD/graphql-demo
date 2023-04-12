@@ -60,6 +60,7 @@ const typeDefs = gql`
     deletePerson(id: ID!): String
     createAddress(address: AddressInput): Address
     addPersonToAddress(personId: ID!, addressId: ID!): Address
+    removePersonFromAddress(personId: ID!, addressId: ID!): Address
   }
 
   type Subscription {
