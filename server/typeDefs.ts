@@ -15,6 +15,13 @@ const typeDefs = gql`
     address: String
     phone: String
     image: String
+    addresses: [Address]
+  }
+
+  type Address {
+    id: ID!
+    address: String
+    persons: [Person]
   }
 
   type Query {
@@ -23,6 +30,7 @@ const typeDefs = gql`
     getPostById(id: ID): Post
     getPersonById(id: ID!): Person
     getAllPeople: [Person]
+    getAllAddresses: [Address]
   }
 
   input PostInput {

@@ -31,6 +31,7 @@ const PersonSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
   createdAt: {
     type: Date,
     default: Date.now,

@@ -1,5 +1,6 @@
 import Post from "./models/Post.model";
 import Person from "./models/Person.model";
+import Address from "./models/Address.model";
 
 const resolvers = {
   Query: {
@@ -19,6 +20,16 @@ const resolvers = {
     },
     getAllPeople: async () => {
       return await Person.find({});
+    },
+    getAllAddresses: async () => {
+      return await Address.find({}).populate("persons", {
+        id: 1,
+        name: 1,
+        age: 1,
+        email: 1,
+        phone: 1,
+        image: 1,
+      });
     },
   },
   Mutation: {
