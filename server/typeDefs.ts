@@ -45,6 +45,12 @@ const typeDefs = gql`
     updatePerson(id: ID, person: PersonInput): Person
     deletePerson(id: ID!): String
   }
+
+  type Subscription {
+    personCreated: Person
+    personUpdated: Person
+    personDeleted: Person
+  }
 `;
 
 export default typeDefs;

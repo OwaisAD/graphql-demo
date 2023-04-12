@@ -93,6 +93,11 @@ const resolvers = {
       return `Ok - person with id ${id} was successfully deleted`;
     },
   },
+  Subscription: {
+    personCreated: {},
+    personUpdated: {},
+    personDeleted: {},
+  },
 };
 
 export default resolvers;
