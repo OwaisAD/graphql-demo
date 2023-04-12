@@ -47,6 +47,10 @@ const typeDefs = gql`
     image: String!
   }
 
+  input AddressInput {
+    address: String
+  }
+
   type Mutation {
     createPost(post: PostInput): Post
     deletePost(id: ID): String
@@ -54,6 +58,8 @@ const typeDefs = gql`
     createPerson(person: PersonInput): Person
     updatePerson(id: ID, person: PersonInput): Person
     deletePerson(id: ID!): String
+    createAddress(address: AddressInput): Address
+    addPersonToAddress(personId: ID!, addressId: ID!): Address
   }
 
   type Subscription {

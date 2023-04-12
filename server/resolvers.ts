@@ -1,6 +1,7 @@
 import Post from "./models/Post.model";
 import Person from "./models/Person.model";
 import Address from "./models/Address.model";
+import mongoose, { isValidObjectId } from "mongoose";
 
 const resolvers = {
   Query: {
@@ -106,6 +107,46 @@ const resolvers = {
       const id = args.id;
       await Person.findByIdAndDelete(id);
       return `Ok - person with id ${id} was successfully deleted`;
+    },
+    createAddress: async (parent: any, args: any, context: any, info: any) => {
+      const { address } = args.address;
+      const newAddress = new Address({ address });
+      await newAddress.save();
+      return newAddress;
+    },
+    addPersonToAddress: async (parent: any, args: any, context: any, info: any) => {
+      const { personId, addressId } = args;
+
+      if (
+        !mongoose.Types.ObjectId.isValid(personId) ||
+        !mongoose.Types.ObjectId.isValid(addressId)
+      ) {
+        throw new Error("Invalid person or address ID");
+      }
+
+      const person = await Person.findById(personId);
+      const address = await Address.findById(addressId);
+
+      if (!person || !address) {
+        throw new Error("Invalid person or address ID");
+      }
+
+      address.persons.push(personId);
+      await address.save();
+
+      // convert the Buffer object to string before returning
+      const newAddress = await Address.findById(addressId).populate("persons");
+
+      if (newAddress !== null) {
+        newAddress.persons = newAddress.persons.map((person: any) => {
+          person.id = person.id.toString();
+          return person;
+        });
+      } else {
+        throw new Error("Failed to add person to address");
+      }
+
+      return newAddress;
     },
   },
   Subscription: {
