@@ -1,9 +1,10 @@
 import Postlist from "./components/Postlist";
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import CreatePostForm from "./components/CreatePostForm";
-import PersonList from "./components/Personlist";
-import CreatePersonForm from "./components/CreatePersonForm";
+import { Routes, Route, redirect } from "react-router-dom";
+import Home from "./pages/Home";
+import Persons from "./pages/Persons";
+import Addresses from "./pages/Addresses";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -22,13 +23,11 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <div>
-        <h1>Frontpage</h1>
-        <CreatePersonForm />
-        <PersonList />
-        {/* <CreatePostForm />
-        <Postlist /> */}
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/persons" element={<Persons />} />
+        <Route path="/addresses" element={<Addresses />} />
+      </Routes>
     </ApolloProvider>
   );
 }
