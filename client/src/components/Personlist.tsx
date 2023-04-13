@@ -3,6 +3,7 @@ import { LOAD_PEOPLE } from "../GraphQL/loadPeople.query";
 import { useEffect, useState } from "react";
 import { LOAD_ADDRESSES } from "../GraphQL/loadAddresses.query";
 import { ADD_PERSON_TO_ADDRESS } from "../GraphQL/addPersonToAddress.mutation";
+import { DELETE_PERSON } from "../GraphQL/deletePerson.mutation";
 
 type personType = {
   id: string;
@@ -27,6 +28,8 @@ const PersonList = () => {
   const [addressesData, setAddresses] = useState([]);
   const [addPersonToAddress, { data: addData, error: addError }] =
     useMutation(ADD_PERSON_TO_ADDRESS);
+  const [deletePerson, { data: deletePersonData, error: deletePersonError }] =
+    useMutation(DELETE_PERSON);
 
   useEffect(() => {
     if (data) {
@@ -120,6 +123,24 @@ const PersonList = () => {
                 style={{ height: "150px", width: "150px", objectFit: "cover" }}
               />
             )}
+            <div>
+              Delete person{" "}
+              <button
+                onClick={() => {
+                  console.log("DELETING PERSON WITH ID", person.id);
+
+                  let confirmation = confirm(
+                    `Are you sure you want to delete user with id ${person.id}`
+                  );
+
+                  if (!confirmation) return;
+
+                  deletePerson({ variables: { deletePersonId: person.id } });
+                }}
+              >
+                X
+              </button>
+            </div>
           </div>
         </div>
       ))}
