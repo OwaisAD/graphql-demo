@@ -4,12 +4,16 @@ export const LOAD_PEOPLE = gql`
   {
     getAllPeople {
       id
-      name
       age
       email
-      address
-      phone
       image
+      name
+      phone
+      address
+      addresses {
+        id
+        address
+      }
     }
   }
 `;
