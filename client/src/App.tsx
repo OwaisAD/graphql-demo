@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Persons from "./pages/Persons";
 import Addresses from "./pages/Addresses";
 import ThemeContextProvider from "./contexts/ThemeContext";
-import Header from "./pages/components/Header";
+import Header from "./pages/components/Nav";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {

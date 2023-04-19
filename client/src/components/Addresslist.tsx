@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { LOAD_ADDRESSES } from "../GraphQL/loadAddresses.query";
+import { UserContext } from "../contexts/UserContext";
 
 type AddressType = {
   id: string;

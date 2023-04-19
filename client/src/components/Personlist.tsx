@@ -1,9 +1,10 @@
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { LOAD_PEOPLE } from "../GraphQL/loadPeople.query";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LOAD_ADDRESSES } from "../GraphQL/loadAddresses.query";
 import { ADD_PERSON_TO_ADDRESS } from "../GraphQL/addPersonToAddress.mutation";
 import { DELETE_PERSON } from "../GraphQL/deletePerson.mutation";
+import { UserContext } from "../contexts/UserContext";
 
 type personType = {
   id: string;
@@ -30,6 +31,8 @@ const PersonList = () => {
     useMutation(ADD_PERSON_TO_ADDRESS);
   const [deletePerson, { data: deletePersonData, error: deletePersonError }] =
     useMutation(DELETE_PERSON);
+
+  const { currentUser } = useContext(UserContext);
 
   useEffect(() => {
     if (data) {
@@ -78,42 +81,44 @@ const PersonList = () => {
               Current address count {!person.addresses.length ? "None" : person.addresses.length}{" "}
               {person.addresses.length > 0 && (
                 <div>
-                  {person.addresses.map((address) => (
-                    <li>{address.address}</li>
+                  {person.addresses.map((address, idx) => (
+                    <li key={idx}>{address.address}</li>
                   ))}
                 </div>
               )}
             </div>
-            <p>
-              Choose address:
-              <select
-                name=""
-                id=""
-                onChange={(e) => {
-                  let personId = person.id;
-                  let addressId = e.target.value;
+            {currentUser !== null && currentUser.role === "Admin" && (
+              <p>
+                Choose address:
+                <select
+                  name=""
+                  id=""
+                  onChange={(e) => {
+                    let personId = person.id;
+                    let addressId = e.target.value;
 
-                  console.log(personId);
-                  console.log(addressId);
+                    console.log(personId);
+                    console.log(addressId);
 
-                  let confirmation = confirm(
-                    `Are you sure you want to add ${person.name} to the chosen address?`
-                  );
+                    let confirmation = confirm(
+                      `Are you sure you want to add ${person.name} to the chosen address?`
+                    );
 
-                  if (!confirmation) return;
+                    if (!confirmation) return;
 
-                  handleAddressChange(personId, addressId);
-                }}
-              >
-                <option selected disabled>
-                  Select an address
-                </option>
-                {addressesData &&
-                  addressesData.map((address: addressType) => (
-                    <option value={address.id}>{address.address}</option>
-                  ))}
-              </select>
-            </p>
+                    handleAddressChange(personId, addressId);
+                  }}
+                >
+                  <option selected disabled>
+                    Select an address
+                  </option>
+                  {addressesData &&
+                    addressesData.map((address: addressType) => (
+                      <option value={address.id}>{address.address}</option>
+                    ))}
+                </select>
+              </p>
+            )}
           </div>
           <div>
             {person.image && (
@@ -123,24 +128,26 @@ const PersonList = () => {
                 style={{ height: "150px", width: "150px", objectFit: "cover" }}
               />
             )}
-            <div>
-              Delete person{" "}
-              <button
-                onClick={() => {
-                  console.log("DELETING PERSON WITH ID", person.id);
+            {currentUser !== null && currentUser.role === "Admin" && (
+              <div>
+                Delete person{" "}
+                <button
+                  onClick={() => {
+                    console.log("DELETING PERSON WITH ID", person.id);
 
-                  let confirmation = confirm(
-                    `Are you sure you want to delete user with id ${person.id}`
-                  );
+                    let confirmation = confirm(
+                      `Are you sure you want to delete user with id ${person.id}`
+                    );
 
-                  if (!confirmation) return;
+                    if (!confirmation) return;
 
-                  deletePerson({ variables: { deletePersonId: person.id } });
-                }}
-              >
-                X
-              </button>
-            </div>
+                    deletePerson({ variables: { deletePersonId: person.id } });
+                  }}
+                >
+                  X
+                </button>
+              </div>
+            )}
           </div>
         </div>
       ))}
