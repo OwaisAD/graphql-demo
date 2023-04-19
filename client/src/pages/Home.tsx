@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 
+
 const Home = () => {
   const { isLight, light, dark } = useContext(ThemeContext);
   const theme = isLight ? light : dark;

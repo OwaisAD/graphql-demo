@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Persons from "./pages/Persons";
 import Addresses from "./pages/Addresses";
 import ThemeContextProvider from "./contexts/ThemeContext";
+import Header from "./pages/components/Header";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -24,6 +25,7 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
+      <Header />
       <ThemeContextProvider>
         <Routes>
           <Route path="/" element={<Home />} />
